@@ -51,6 +51,7 @@ const String githubQuery = '''
         ... on Commit {
           history(first: 1) {
             nodes {
+              oid
               file(path: "$githubTargetFolder") {
                 extension lineCount object {
                   ... on Tree {
@@ -217,9 +218,14 @@ Future<void> generate(Options options) async {
   );
 
   // Parse the result from GitHub.
-  final JsonContext<JsonArray> fileListJson = jsonGetPath<JsonArray>(
+  final JsonContext<JsonObject> commitJson = jsonGetPath<JsonObject>(
     JsonContext.root(githubBody),
-    jsonPathSplit('data.repository.defaultBranchRef.target.history.nodes.0.file.object.entries'),
+    jsonPathSplit('data.repository.defaultBranchRef.target.history.nodes.0'),
+  );
+  final String commitId = jsonGetKey<String>(commitJson, 'oid').current;
+  final JsonContext<JsonArray> fileListJson = jsonGetPath<JsonArray>(
+    commitJson,
+    jsonPathSplit('file.object.entries'),
   );
   final Iterable<GitHubFile> files = Iterable<GitHubFile>.generate(
     fileListJson.current.length,
@@ -248,6 +254,7 @@ Future<void> generate(Options options) async {
   final String result = renderTemplate(
     File(path.join(options.dataRoot, overallTemplateName)).readAsStringSync(),
     <String, String>{
+      'COMMIT_ID': commitId,
       'LAYOUT_ENTRIES': entriesString.join('\n\n'),
     },
   );
