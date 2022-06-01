@@ -56,6 +56,6 @@ Future<void> main(List<String> rawArguments) async {
     dataRoot: path.join(packageRoot.path, 'data'),
     allowCache: parsedArguments['allow-cache'] as bool,
     outputRoot: path.join(packageRoot.parent.parent.path,
-        'third_party', 'packages', 'web_keyboard_layouts', 'lib'),
+        'third_party', 'packages', 'web_keyboard_layouts', 'lib', 'src'),
   ));
 }

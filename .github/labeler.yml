@@ -60,3 +60,6 @@
 
 'p: cupertino_icons':
   - third_party/packages/cupertino_icons/**/*
+
+'p: web_keyboard_layouts':
+  - third_party/packages/web_keyboard_layouts/**/*

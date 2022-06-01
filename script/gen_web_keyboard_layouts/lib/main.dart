@@ -41,7 +41,7 @@ const String githubCacheFileName = 'github-response.json';
 const String githubTargetFolder = 'src/vs/workbench/services/keybinding/browser/keyboardLayouts';
 const String overallTemplateName = 'layouts.dart.tmpl';
 const String entryTemplateName = 'layout_entry.dart.tmpl';
-const String outputName = 'layouts.dart';
+const String outputName = 'definitions.dart';
 
 const String githubQuery = '''
 {
@@ -258,5 +258,7 @@ Future<void> generate(Options options) async {
       'LAYOUT_ENTRIES': entriesString.join('\n\n'),
     },
   );
-  File(path.join(options.outputRoot, outputName)).writeAsStringSync(result);
+  final String outputPath = path.join(options.outputRoot, outputName);
+  Directory(path.dirname(outputPath)).createSync(recursive: true);
+  File(outputPath).writeAsStringSync(result);
 }
