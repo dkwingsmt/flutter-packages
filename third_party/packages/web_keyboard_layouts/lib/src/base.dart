@@ -9,19 +9,13 @@ enum LayoutPlatform {
 
 class LayoutEntry {
   const LayoutEntry(
-    this.value,
-    this.withShift,
-    this.withAltGr,
-    this.withShiftAltGr, [
-    this.mask = 0,
+    this.values,
     this.vkey,
-  ]);
+  );
 
-  final String value;
-  final String withShift;
-  final String withAltGr;
-  final String withShiftAltGr;
-  final int mask;
+  // List of four: value, withShift, withAlt, withShiftAlt.
+  // Each value is either 0xYYYYYY, or 0x1000000 for a dead key.
+  final List<int> values;
   final String? vkey;
 }
 
