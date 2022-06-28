@@ -57,7 +57,7 @@ class GoRouteInformationParser
   /// with this parser.
   ///
   /// An assertion error will be thrown if this property set to true and the
-  /// [GoRouteInformationProvider] is in not in use.
+  /// [GoRouteInformationProvider] is not in use.
   ///
   /// Defaults to false.
   final bool debugRequireGoRouteInformationProvider;
@@ -97,7 +97,7 @@ class GoRouteInformationParser
     assert(_nameToPath.containsKey(name), 'unknown route name: $name');
     final String path = _nameToPath[name]!;
     assert(() {
-      // Check that all required params are presented.
+      // Check that all required params are present.
       final List<String> paramNames = <String>[];
       patternToRegExp(path, paramNames);
       for (final String paramName in paramNames) {
@@ -147,8 +147,8 @@ class GoRouteInformationParser
         assert(
             routeInformation is DebugGoRouteInformation,
             'This GoRouteInformationParser needs to be used with '
-            'GoRouteInformationProvider, do you forget to pass in '
-            'GoRouter.routeinformationProvider to the Router constructor?');
+            'GoRouteInformationProvider, did you forget to pass in '
+            'GoRouter.routeInformationProvider to the Router constructor?');
       }
       return true;
     }());
@@ -290,7 +290,7 @@ class GoRouteInformationParser
 
   List<GoRouteMatch> _getLocRouteMatches(String location, Object? extra) {
     final Uri uri = Uri.parse(location);
-    return _getLocRouteRecursively(
+    final List<GoRouteMatch> result = _getLocRouteRecursively(
       loc: uri.path,
       restLoc: uri.path,
       routes: routes,
@@ -299,6 +299,12 @@ class GoRouteInformationParser
       queryParams: uri.queryParameters,
       extra: extra,
     );
+
+    if (result.isEmpty) {
+      throw _ParserError('no routes for location: $location');
+    }
+
+    return result;
   }
 
   static List<GoRouteMatch> _getLocRouteRecursively({
@@ -372,7 +378,7 @@ class GoRouteInformationParser
     }
 
     if (result.isEmpty) {
-      throw _ParserError('no routes for location: $loc');
+      return <GoRouteMatch>[];
     }
 
     // If there are multiple routes that match the location, returning the first one.

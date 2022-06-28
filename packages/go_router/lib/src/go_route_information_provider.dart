@@ -21,7 +21,7 @@ class GoRouteInformationProvider extends RouteInformationProvider
   final Listenable? _refreshListenable;
 
   // ignore: unnecessary_non_null_assertion
-  static WidgetsBinding get _binding => WidgetsBinding.instance!;
+  static WidgetsBinding get _binding => WidgetsBinding.instance;
 
   @override
   void routerReportsNewRouteInformation(RouteInformation routeInformation,
@@ -32,7 +32,7 @@ class GoRouteInformationProvider extends RouteInformationProvider
         (type == RouteInformationReportingType.none &&
             _valueInEngine.location == routeInformation.location);
     SystemNavigator.selectMultiEntryHistory();
-    // TODO(chunhtai): should report extra to to browser through state if
+    // TODO(chunhtai): should report extra to the browser through state if
     // possible.
     SystemNavigator.routeInformationUpdated(
       location: routeInformation.location!,
@@ -50,7 +50,7 @@ class GoRouteInformationProvider extends RouteInformationProvider
   RouteInformation _value;
   set value(RouteInformation other) {
     final bool shouldNotify =
-        value.location != other.location || value.state != other.state;
+        _value.location != other.location || _value.state != other.state;
     _value = other;
     if (shouldNotify) {
       notifyListeners();
@@ -98,7 +98,6 @@ class GoRouteInformationProvider extends RouteInformationProvider
   Future<bool> didPushRouteInformation(
       RouteInformation routeInformation) async {
     assert(hasListeners);
-    print('_platformReportsNewRouteInformation $routeInformation');
     _platformReportsNewRouteInformation(routeInformation);
     return true;
   }
@@ -114,7 +113,7 @@ class GoRouteInformationProvider extends RouteInformationProvider
 /// A debug class that is used for asserting the [GoRouteInformationProvider] is
 /// in use with the [GoRouteInformationParser].
 class DebugGoRouteInformation extends RouteInformation {
-  /// Creates
+  /// Creates a [DebugGoRouteInformation]
   DebugGoRouteInformation({String? location, Object? state})
       : super(location: location, state: state);
 }

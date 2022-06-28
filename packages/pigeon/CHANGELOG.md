@@ -1,3 +1,30 @@
+## 3.2.1
+
+* Removes `@dart = 2.12` from generated Dart code.
+
+## 3.2.0
+
+* Adds experimental support for Swift generation.
+
+## 3.1.7
+
+* [java] Adds option to add javax.annotation.Generated annotation.
+
+## 3.1.6
+
+* Supports newer versions of `analyzer`.
+
+## 3.1.5
+
+* Fixes potential crash bug when using a nullable nested type that has nonnull
+  fields in ObjC.
+
+## 3.1.4
+
+* [c++] Adds support for non-nullable fields, and fixes some issues with
+  nullable fields. The types of some getters and setter have changed, so this
+  may require updates to existing code.
+
 ## 3.1.3
 
 * Adds support for enums in arguments to methods for HostApis.
