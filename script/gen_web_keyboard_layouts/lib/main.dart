@@ -10,6 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 import 'json_get.dart';
+import 'utils.dart';
+
+const int kDeadChar = 0x1000000;
 
 @immutable
 class Options {
@@ -153,7 +156,7 @@ GitHubFile jsonGetGithubFile(JsonContext<JsonArray> files, int index) {
   );
 }
 
-typedef LayoutEntry = String;
+typedef LayoutEntry = List<int>;
 
 @immutable
 class Layout {
@@ -167,20 +170,58 @@ class Layout {
 Layout parseLayoutFile(GitHubFile file) {
   final Map<String, LayoutEntry> mapping = <String, LayoutEntry>{};
 
-  // Parse each line, which looks like:
+  // Parse a line that looks like the following, and get its key as well as
+  // the content within the square bracket.
   //
+  //    F19: [],
   //    KeyZ: ['y', 'Y', '', '', 0, 'VK_Y'],
-  final RegExp lineParser = RegExp(r'^[ \t]*(.+?): \[(.+)\],$');
+  final RegExp lineParser = RegExp(r'^[ \t]*(.+?): \[(.*)\],$');
+  // Parse each child of the content within the square bracket.
+  final RegExp listParser = RegExp(r"^'(.*?)', '(.*?)', '(.*?)', '(.*?)', (\d)(?:, '(.+)')?$");
+  // Parse a char represented in unicode hex, such as \u001b.
+  final RegExp hexParser = RegExp(r'^\\u([0-9a-fA-F]+)$');
   file.content.split('\n').forEach((String line) {
-    final RegExpMatch? match = lineParser.firstMatch(line);
-    if (match == null) {
+    final RegExpMatch? lineMatch = lineParser.firstMatch(line);
+    if (lineMatch == null) {
       return;
     }
-    final String eventKey = match.group(1)!;
-    final String definition = match.group(2)!
-      .replaceAll(r"'\\'", r"r'\'")  // '\\' -> r'\'
-      .replaceAll(r"'$'", r"r'$'");  // '$' -> r'$'
-    mapping[eventKey] = definition;
+    final String eventKey = lineMatch.group(1)!;
+    final String definition = lineMatch.group(2)!;
+    if (definition.isEmpty) {
+      return;
+    }
+    final RegExpMatch? listMatch = listParser.firstMatch(definition);
+    assert(listMatch != null, 'Unable to match $definition');
+    final int deadMask = int.parse(listMatch!.group(5)!, radix: 10);
+
+    int combineValue(String rawString, int deadMask) {
+      if (deadMask != 0 || rawString.isEmpty) {
+        return kDeadChar;
+      }
+      final RegExpMatch? hexMatch = hexParser.firstMatch(rawString);
+      if (hexMatch != null) {
+        return int.parse(hexMatch.group(1)!, radix: 16);
+      }
+      final String charString = const <String, String>{
+        r'\\': r'\',
+        r'\r': '\r',
+        r'\b': '\b',
+        r'\t': '\t',
+        r"\'": "'",
+        'l̥': 'l', // TODO
+        'L̥': 'L', // TODO
+        'r̥': 'r', // TODO
+        'R̥': 'R', // TODO
+      }[rawString] ?? rawString;
+      assert(charString.length == 1, 'Unrecognized multibyte character |$charString| (file ${file.name} key $eventKey)');
+      return charString.codeUnitAt(0);
+    }
+    mapping[eventKey] = <int>[
+      combineValue(listMatch.group(1)!, deadMask & 0x1),
+      combineValue(listMatch.group(2)!, deadMask & 0x2),
+      combineValue(listMatch.group(3)!, deadMask & 0x4),
+      combineValue(listMatch.group(4)!, deadMask & 0x8),
+    ];
   });
 
   // Parse the file name, which looks like "en-belgian.win.ts".
@@ -245,8 +286,9 @@ Future<void> generate(Options options) async {
       <String, String>{
         'NAME': layout.name,
         'PLATFORM': layout.platform,
-        'ENTRIES': layout.mapping.entries.map((MapEntry<String, String> entry) {
-          return "      '${entry.key}': LayoutEntry(${entry.value}),";
+        'ENTRIES': layout.mapping.entries.map((MapEntry<String, LayoutEntry> entry) {
+          final String value = entry.value.map(toHex).join(', ');
+          return "      '${entry.key}': LayoutEntry([$value]),";
         }).join('\n'),
       },
     ).trimRight();

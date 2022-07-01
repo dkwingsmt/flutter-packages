@@ -11,6 +11,16 @@ import 'package:path/path.dart' as path;
 const String kEnvGithubToken = 'GITHUB_TOKEN';
 
 Future<void> main(List<String> rawArguments) async {
+  bool enabledAssert = false;
+  assert(() {
+    enabledAssert = true;
+    return true;
+  }());
+  if (!enabledAssert) {
+    print('This script must be run with assert enabled. Please rerun with --enable-asserts.');
+    exit(1);
+  }
+
   final Map<String, String> env = Platform.environment;
   final String? envGithubToken = env[kEnvGithubToken];
 
