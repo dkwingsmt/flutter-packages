@@ -18,14 +18,14 @@ const int kDeadChar = 0x1000000;
 class Options {
   /// Build an option.
   const Options({
-    required this.allowCache,
+    required this.force,
     required this.githubToken,
     required this.cacheRoot,
     required this.dataRoot,
     required this.outputRoot,
   });
 
-  final bool allowCache;
+  final bool force;
 
   /// The GitHub personal access token used to make the GitHub request.
   final String githubToken;
@@ -83,17 +83,17 @@ typedef AsyncGetter<T> = Future<T> Function();
 /// Retrieve a string using the procedure defined by `ifNotExist` based on the
 /// cache file at `cachePath`.
 ///
-/// If `readsCache` is true, this function tries to read the cache file, calls
+/// If `forceRefresh` is false, this function tries to read the cache file, calls
 /// `ifNotExist` when necessary, and writes the result to the cache.
 ///
-/// If `readsCache` is false, this function never read the cache file, always
+/// If `forceRefresh` is true, this function never read the cache file, always
 /// calls `ifNotExist` when necessary, and still writes the result to the cache.
 ///
 /// Exceptions from `ifNotExist` will be thrown, while exceptions related to
 /// caching are only printed.
-Future<String> tryCached(String cachePath, bool readsCache, AsyncGetter<String> ifNotExist) async {
+Future<String> tryCached(String cachePath, bool forceRefresh, AsyncGetter<String> ifNotExist) async {
   final File cacheFile = File(cachePath);
-  if (readsCache && cacheFile.existsSync()) {
+  if (!forceRefresh && cacheFile.existsSync()) {
     try {
       final String result = cacheFile.readAsStringSync();
       print('Using GitHub cache.');
@@ -117,8 +117,8 @@ Future<String> tryCached(String cachePath, bool readsCache, AsyncGetter<String> 
   return result;
 }
 
-Future<Map<String, dynamic>> fetchGithub(String githubToken, bool allowCache, String cachePath) async {
-  final String response = await tryCached(cachePath, allowCache, () async {
+Future<Map<String, dynamic>> fetchGithub(String githubToken, bool forceRefresh, String cachePath) async {
+  final String response = await tryCached(cachePath, forceRefresh, () async {
     final String condensedQuery = githubQuery
         .replaceAll(RegExp(r'\{ +'), '{')
         .replaceAll(RegExp(r' +\}'), '}');
@@ -254,7 +254,7 @@ Future<void> generate(Options options) async {
   // Fetch files from GitHub.
   final Map<String, dynamic> githubBody = await fetchGithub(
     options.githubToken,
-    options.allowCache,
+    options.force,
     path.join(options.cacheRoot, githubCacheFileName),
   );
 
@@ -278,7 +278,7 @@ Future<void> generate(Options options) async {
                       && !file.name.startsWith('_.contribution'),
   );
 
-  final Iterable<Layout> layouts = files.map(parseLayoutFile).toList();
+  final List<Layout> layouts = files.map(parseLayoutFile).toList();
 
   final Iterable<String> entriesString = layouts.map((Layout layout) {
     return renderTemplate(

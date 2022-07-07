@@ -11,40 +11,18 @@ import 'package:path/path.dart' as path;
 const String kEnvGithubToken = 'GITHUB_TOKEN';
 
 Future<void> main(List<String> rawArguments) async {
-  bool enabledAssert = false;
-  assert(() {
-    enabledAssert = true;
-    return true;
-  }());
-  if (!enabledAssert) {
-    print('This script must be run with assert enabled. Please rerun with --enable-asserts.');
-    exit(1);
-  }
-
   final Map<String, String> env = Platform.environment;
-  final String? envGithubToken = env[kEnvGithubToken];
-
   final ArgParser argParser = ArgParser();
-  argParser.addOption(
-    'github-token',
-    defaultsTo: envGithubToken,
-    mandatory: envGithubToken == null,
-    hide: true,
-    help: 'A GitHub personal access token for authentication. '
-      r'Please set the environment variable $GITHUB_TOKEN '
-      'instead of passing via CLI argument. '
-      'This token is only used for quota controlling and does not need any '
-      'scopes. Create one at '
-      'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token.',
-  );
   argParser.addFlag(
-    'allow-cache',
+    'force',
+    abbr: 'f',
     defaultsTo: false,
     negatable: false,
-    help: 'Use the cached result of the GitHub request if available. Suitable for development.',
+    help: 'Make a new request to GitHub even if a cache is detected',
   );
   argParser.addFlag(
     'help',
+    abbr: 'h',
     negatable: false,
     help: 'Print help for this command.',
   );
@@ -56,15 +34,36 @@ Future<void> main(List<String> rawArguments) async {
     exit(0);
   }
 
+  bool enabledAssert = false;
+  assert(() {
+    enabledAssert = true;
+    return true;
+  }());
+  if (!enabledAssert) {
+    print('Error: This script must be run with assert enabled. Please rerun with --enable-asserts.');
+    exit(1);
+  }
+
+  final String? envGithubToken = env[kEnvGithubToken];
+  if (envGithubToken == null) {
+    print('Error: Environment variable GITHUB_TOKEN not found.\n\n'
+          'Set the environment variable GITHUB_TOKEN as a GitHub personal access\n'
+          'token for authentication. This token is only used for quota controlling\n'
+          'and does not need any scopes. Create one at\n'
+          'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token.',
+    );
+    exit(1);
+  }
+
   // The root of this package. The folder that is called
   // 'gen_web_keyboard_layouts' and contains 'pubspec.yaml'.
   final Directory packageRoot = Directory(path.dirname(Platform.script.toFilePath())).parent;
 
   await generate(Options(
-    githubToken: parsedArguments['github-token'] as String,
+    githubToken: envGithubToken,
     cacheRoot: path.join(packageRoot.path, '.cache'),
     dataRoot: path.join(packageRoot.path, 'data'),
-    allowCache: parsedArguments['allow-cache'] as bool,
+    force: parsedArguments['force'] as bool,
     outputRoot: path.join(packageRoot.parent.parent.path,
         'third_party', 'packages', 'web_keyboard_layouts', 'lib', 'src'),
   ));
