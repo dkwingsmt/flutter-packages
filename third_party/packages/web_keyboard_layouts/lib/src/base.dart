@@ -10,13 +10,11 @@ enum LayoutPlatform {
 class LayoutEntry {
   const LayoutEntry(
     this.values,
-    this.vkey,
   );
 
   // List of four: value, withShift, withAlt, withShiftAlt.
   // Each value is either 0xYYYYYY, or 0x1000000 for a dead key.
   final List<int> values;
-  final String? vkey;
 }
 
 class LayoutInfo {
@@ -28,5 +26,5 @@ class LayoutInfo {
 
   final String name;
   final LayoutPlatform platform;
-  final Map<String, LayoutEntry> mapping;
+  final List<LayoutEntry> mapping;
 }

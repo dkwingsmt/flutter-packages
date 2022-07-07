@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:gen_web_keyboard_layouts/data.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import 'dart:convert';
@@ -44,7 +45,7 @@ const String githubCacheFileName = 'github-response.json';
 const String githubTargetFolder = 'src/vs/workbench/services/keybinding/browser/keyboardLayouts';
 const String overallTemplateName = 'layouts.dart.tmpl';
 const String entryTemplateName = 'layout_entry.dart.tmpl';
-const String outputName = 'definitions.dart';
+const String outputName = 'definitions.g.dart';
 
 const String githubQuery = '''
 {
@@ -286,9 +287,9 @@ Future<void> generate(Options options) async {
       <String, String>{
         'NAME': layout.name,
         'PLATFORM': layout.platform,
-        'ENTRIES': layout.mapping.entries.map((MapEntry<String, LayoutEntry> entry) {
-          final String value = entry.value.map(toHex).join(', ');
-          return "      '${entry.key}': LayoutEntry([$value]),";
+        'ENTRIES': kLayoutGoals.keys.map((String key) {
+          final String value = layout.mapping[key]!.map(toHex).join(', ');
+          return '      LayoutEntry(<int>[$value]), // $key';
         }).join('\n'),
       },
     ).trimRight();
@@ -297,6 +298,9 @@ Future<void> generate(Options options) async {
     File(path.join(options.dataRoot, overallTemplateName)).readAsStringSync(),
     <String, String>{
       'COMMIT_ID': commitId,
+      'LAYOUT_GOALS': kLayoutGoals.entries.map((MapEntry<String, String?> entry) =>
+        "  '${entry.key}': ${entry.value == null ? 'null' : "'${entry.value}'"},"
+      ).join('\n'),
       'LAYOUT_ENTRIES': entriesString.join('\n\n'),
     },
   );

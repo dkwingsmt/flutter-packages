@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const Map<String, String> mandatoryGoals = <String, String>{
+const Map<String, String?> kLayoutGoals = <String, String?>{
   'KeyA': 'A',
   'KeyB': 'B',
   'KeyC': 'C',
@@ -39,18 +39,15 @@ const Map<String, String> mandatoryGoals = <String, String>{
   'Digit8': '8',
   'Digit9': '9',
   'Digit0': '0',
+  'Minus': null,
+  'Equal': null,
+  'BracketLeft': null,
+  'BracketRight': null,
+  'Backslash': null,
+  'Semicolon': null,
+  'Quote': null,
+  'Backquote': null,
+  'Comma': null,
+  'Period': null,
+  'Slash': null,
 };
-
-const List<String> referentialGoals = <String>[
-  'Minus',
-  'Equal',
-  'BracketLeft',
-  'BracketRight',
-  'Backslash',
-  'Semicolon',
-  'Quote',
-  'Backquote',
-  'Comma',
-  'Period',
-  'Slash',
-];

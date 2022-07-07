@@ -5,5 +5,6 @@ export 'src/base.dart' show
   LayoutPlatform,
   LayoutEntry,
   LayoutInfo;
-export 'src/definitions.dart' show
+export 'src/definitions.g.dart' show
+  kLayoutGoals,
   kLayouts;
