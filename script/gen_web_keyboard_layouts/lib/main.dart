@@ -289,7 +289,7 @@ Future<void> generate(Options options) async {
         'PLATFORM': layout.platform,
         'ENTRIES': kLayoutGoals.keys.map((String key) {
           final String value = layout.mapping[key]!.map(toHex).join(', ');
-          return '      LayoutEntry(<int>[$value]), // $key';
+          return '      <int>[$value], // $key';
         }).join('\n'),
       },
     ).trimRight();
