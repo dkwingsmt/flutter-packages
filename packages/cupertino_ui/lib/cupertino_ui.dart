@@ -7,4 +7,10 @@
 /// To use, import `package:cupertino_ui/cupertino_ui.dart`.
 library cupertino_ui;
 
-export 'package:flutter/cupertino.dart';
+export 'colors.dart';
+export 'constants.dart';
+export 'icon_theme_data.dart';
+export 'interface_level.dart';
+export 'switch.dart';
+export 'text_theme.dart';
+export 'theme.dart';
