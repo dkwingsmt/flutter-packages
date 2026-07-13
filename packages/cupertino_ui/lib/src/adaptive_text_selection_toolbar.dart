@@ -158,7 +158,7 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
          onShare: null, // See https://github.com/flutter/flutter/issues/141775.
        );
 
-  /// {@macro flutter.material.AdaptiveTextSelectionToolbar.anchors}
+  /// The location on which to anchor the menu.
   final TextSelectionToolbarAnchors anchors;
 
   /// The children of the toolbar, typically buttons.

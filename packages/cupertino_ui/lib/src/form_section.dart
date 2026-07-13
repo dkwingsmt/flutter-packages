@@ -56,7 +56,10 @@ const EdgeInsetsDirectional _kFormDefaultInsetGroupedRowsMargin = EdgeInsetsDire
 /// The [backgroundColor] parameter sets the background color behind the section.
 /// If null, defaults to [CupertinoColors.systemGroupedBackground].
 ///
-/// {@macro flutter.material.Material.clipBehavior}
+/// The content will be clipped (or not) according to this option.
+///
+/// See the enum [Clip] for details of all possible options and their common
+/// use cases.
 ///
 /// See also:
 ///
@@ -95,7 +98,10 @@ class CupertinoFormSection extends StatelessWidget {
   /// The [backgroundColor] parameter sets the background color behind the
   /// section. If null, defaults to [CupertinoColors.systemGroupedBackground].
   ///
-  /// {@macro flutter.material.Material.clipBehavior}
+  /// The content will be clipped (or not) according to this option.
+  ///
+  /// See the enum [Clip] for details of all possible options and their common
+  /// use cases.
   const CupertinoFormSection({
     super.key,
     required this.children,
@@ -141,7 +147,10 @@ class CupertinoFormSection extends StatelessWidget {
   /// The [backgroundColor] parameter sets the background color behind the
   /// section. If null, defaults to [CupertinoColors.systemGroupedBackground].
   ///
-  /// {@macro flutter.material.Material.clipBehavior}
+  /// The content will be clipped (or not) according to this option.
+  ///
+  /// See the enum [Clip] for details of all possible options and their common
+  /// use cases.
   const CupertinoFormSection.insetGrouped({
     super.key,
     required this.children,
@@ -194,7 +203,10 @@ class CupertinoFormSection extends StatelessWidget {
   /// Defaults to [CupertinoColors.systemGroupedBackground].
   final Color backgroundColor;
 
-  /// {@macro flutter.material.Material.clipBehavior}
+  /// The content will be clipped (or not) according to this option.
+  ///
+  /// See the enum [Clip] for details of all possible options and their common
+  /// use cases.
   ///
   /// Defaults to [Clip.none].
   final Clip clipBehavior;

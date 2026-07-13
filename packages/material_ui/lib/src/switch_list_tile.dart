@@ -457,7 +457,24 @@ class SwitchListTile extends StatelessWidget {
   /// defaults to [MaterialTapTargetSize.shrinkWrap].
   final MaterialTapTargetSize? materialTapTargetSize;
 
-  /// {@macro flutter.cupertino.CupertinoSwitch.dragStartBehavior}
+  /// Determines the way that drag start behavior is handled.
+  ///
+  /// If set to [DragStartBehavior.start], the drag behavior used to move the
+  /// switch from on to off will begin at the position where the drag gesture won
+  /// the arena. If set to [DragStartBehavior.down] it will begin at the position
+  /// where a down event was first detected.
+  ///
+  /// In general, setting this to [DragStartBehavior.start] will make drag
+  /// animation smoother and setting it to [DragStartBehavior.down] will make
+  /// drag behavior feel slightly more reactive.
+  ///
+  /// By default, the drag start behavior is [DragStartBehavior.start].
+  ///
+  /// See also:
+  ///
+  ///  * [DragGestureRecognizer.dragStartBehavior], which gives an example for
+  ///    the different behaviors.
+  ///
   final DragStartBehavior dragStartBehavior;
 
   /// The cursor for a mouse pointer when it enters or is hovering over the
@@ -594,7 +611,12 @@ class SwitchListTile extends StatelessWidget {
   /// The color for the tile's [Material] when a pointer is hovering over it.
   final Color? hoverColor;
 
-  /// {@macro flutter.cupertino.CupertinoSwitch.applyTheme}
+  /// Whether to apply the ambient [CupertinoThemeData].
+  ///
+  /// If true, the track uses [CupertinoThemeData.primaryColor] for the track
+  /// when the switch is on.
+  ///
+  /// Defaults to [CupertinoThemeData.applyThemeToAll].
   final bool? applyCupertinoTheme;
 
   /// Whether to add button:true to the semantics if onTap is provided.

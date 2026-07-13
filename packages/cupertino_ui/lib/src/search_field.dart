@@ -284,7 +284,21 @@ class CupertinoSearchTextField extends StatefulWidget {
   /// necessarily clearing text.
   final VoidCallback? onSuffixTap;
 
-  /// {@macro flutter.material.textfield.restorationId}
+  /// Restoration ID to save and restore the state of the text field.
+  ///
+  /// If non-null, the text field will persist and restore its current scroll
+  /// offset and - if no [controller] has been provided - the content of the
+  /// text field. If a [controller] has been provided, it is the responsibility
+  /// of the owner of that controller to persist and restore it, e.g. by using
+  /// a [RestorableTextEditingController].
+  ///
+  /// The state of this widget is persisted in a [RestorationBucket] claimed
+  /// from the surrounding [RestorationScope] using the provided restoration ID.
+  ///
+  /// See also:
+  ///
+  ///  * [RestorationManager], which explains how state restoration works in
+  ///    Flutter.
   final String? restorationId;
 
   /// {@macro flutter.widgets.Focus.focusNode}
@@ -293,7 +307,24 @@ class CupertinoSearchTextField extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.autofocus}
   final bool autofocus;
 
-  /// {@macro flutter.material.textfield.onTap}
+  /// Called for the first tap in a series of taps.
+  ///
+  /// The text field builds a [GestureDetector] to handle input events like tap,
+  /// to trigger focus requests, to move the caret, adjust the selection, etc.
+  /// Handling some of those events by wrapping the text field with a competing
+  /// GestureDetector is problematic.
+  ///
+  /// To unconditionally handle taps, without interfering with the text field's
+  /// internal gesture detector, provide this callback.
+  ///
+  /// If the text field is created with [enabled] false, taps will not be
+  /// recognized.
+  ///
+  /// To be notified when the text field gains or loses the focus, provide a
+  /// [focusNode] and add a listener to that.
+  ///
+  /// To listen to arbitrary pointer events without competing with the
+  /// text field's internal gesture detector, use a [Listener].
   final VoidCallback? onTap;
 
   /// Whether to enable autocorrection.

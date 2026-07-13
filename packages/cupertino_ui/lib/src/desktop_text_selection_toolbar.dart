@@ -86,10 +86,15 @@ class CupertinoDesktopTextSelectionToolbar extends StatelessWidget {
     ];
   }
 
-  /// {@macro flutter.material.DesktopTextSelectionToolbar.anchor}
+  /// The point where the toolbar will attempt to position itself as closely as
+  /// possible.
   final Offset anchor;
 
-  /// {@macro flutter.material.TextSelectionToolbar.children}
+  /// The children that will be displayed in the text selection toolbar.
+  ///
+  /// Typically these are buttons.
+  ///
+  /// Must not be empty.
   ///
   /// See also:
   ///   * [CupertinoDesktopTextSelectionToolbarButton], which builds a default
