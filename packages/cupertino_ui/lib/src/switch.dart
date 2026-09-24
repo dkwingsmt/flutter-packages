@@ -92,26 +92,11 @@ const CupertinoDynamicColor _kOffLabelColor = CupertinoDynamicColor.withBrightne
 ///
 /// <callout-box>
 ///
-// TODO(framework): Add unit tests to this code snippet.
-// https://github.com/flutter/flutter/issues/188530
-///
-///
 /// This sample shows how to use a [CupertinoSwitch] in a [CupertinoListTile]. The
 /// [MergeSemantics] is used to turn the entire [CupertinoListTile] into a single item
 /// for accessibility tools.
 ///
-/// ```dart
-/// MergeSemantics(
-///   child: CupertinoListTile(
-///     title: const Text('Lights'),
-///     trailing: CupertinoSwitch(
-///       value: _lights,
-///       onChanged: (bool value) { setState(() { _lights = value; }); },
-///     ),
-///     onTap: () { setState(() { _lights = !_lights; }); },
-///   ),
-/// )
-/// ```
+/// {@example /example/lib/switch/cupertino_switch.snippet.0.dart#body indent=strip}
 ///
 /// </callout-box>
 ///
@@ -320,25 +305,11 @@ class CupertinoSwitch extends StatefulWidget {
   ///
   /// <callout-box>
   ///
-  // TODO(framework): Add unit tests to this code snippet.
-  // https://github.com/flutter/flutter/issues/188530
-  ///
   /// This example resolves the [trackOutlineColor] based on the current
   /// [WidgetState] of the [CupertinoSwitch], providing a different [Color] when it is
   /// [WidgetState.disabled].
   ///
-  /// ```dart
-  /// CupertinoSwitch(
-  ///   value: true,
-  ///   onChanged: (bool value) { },
-  ///   trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-  ///     if (states.contains(WidgetState.disabled)) {
-  ///       return CupertinoColors.activeOrange.withValues(alpha: .48);
-  ///     }
-  ///     return null; // Use the default color.
-  ///   }),
-  /// )
-  /// ```
+  /// {@example /example/lib/switch/cupertino_switch.snippet.1.dart#body indent=strip}
   ///
   /// </callout-box>
   ///
@@ -355,25 +326,11 @@ class CupertinoSwitch extends StatefulWidget {
   ///
   /// <callout-box>
   ///
-  // TODO(framework): Add unit tests to this code snippet.
-  // https://github.com/flutter/flutter/issues/188530
-  ///
   /// This example resolves the [trackOutlineWidth] based on the current
   /// [WidgetState] of the [CupertinoSwitch], providing a different outline width when it is
   /// [WidgetState.disabled].
   ///
-  /// ```dart
-  /// CupertinoSwitch(
-  ///   value: true,
-  ///   onChanged: (bool value) { },
-  ///   trackOutlineWidth: WidgetStateProperty.resolveWith<double?>((Set<WidgetState> states) {
-  ///     if (states.contains(WidgetState.disabled)) {
-  ///       return 5.0;
-  ///     }
-  ///     return null; // Use the default width.
-  ///   }),
-  /// )
-  /// ```
+  /// {@example /example/lib/switch/cupertino_switch.snippet.2.dart#body indent=strip}
   ///
   /// </callout-box>
   ///
@@ -393,25 +350,11 @@ class CupertinoSwitch extends StatefulWidget {
   ///
   /// <callout-box>
   ///
-  // TODO(framework): Add unit tests to this code snippet.
-  // https://github.com/flutter/flutter/issues/188530
-  ///
   /// This example resolves the [thumbIcon] based on the current
   /// [WidgetState] of the [CupertinoSwitch], providing a different [Icon] when it is
   /// [WidgetState.disabled].
   ///
-  /// ```dart
-  /// CupertinoSwitch(
-  ///   value: true,
-  ///   onChanged: (bool value) { },
-  ///   thumbIcon: WidgetStateProperty.resolveWith<Icon?>((Set<WidgetState> states) {
-  ///     if (states.contains(WidgetState.disabled)) {
-  ///       return const Icon(Icons.close);
-  ///     }
-  ///     return null; // All other states will use the default thumbIcon.
-  ///   }),
-  /// )
-  /// ```
+  /// {@example /example/lib/switch/cupertino_switch.snippet.3.dart#body indent=strip}
   ///
   /// </callout-box>
   ///
@@ -429,25 +372,11 @@ class CupertinoSwitch extends StatefulWidget {
   ///
   /// <callout-box>
   ///
-  // TODO(framework): Add unit tests to this code snippet.
-  // https://github.com/flutter/flutter/issues/188530
-  ///
   /// This example resolves the [mouseCursor] based on the current
   /// [WidgetState] of the [CupertinoSwitch], providing a different [mouseCursor] when it is
   /// [WidgetState.disabled].
   ///
-  /// ```dart
-  /// CupertinoSwitch(
-  ///   value: true,
-  ///   onChanged: (bool value) { },
-  ///   mouseCursor: WidgetStateProperty.resolveWith<MouseCursor>((Set<WidgetState> states) {
-  ///     if (states.contains(WidgetState.disabled)) {
-  ///       return SystemMouseCursors.click;
-  ///     }
-  ///     return SystemMouseCursors.basic; // All other states will use the default mouseCursor.
-  ///   }),
-  /// )
-  /// ```
+  /// {@example /example/lib/switch/cupertino_switch.snippet.4.dart#body indent=strip}
   ///
   /// </callout-box>
   ///
