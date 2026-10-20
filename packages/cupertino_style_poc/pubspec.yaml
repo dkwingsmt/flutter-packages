@@ -1,0 +1,21 @@
+name: cupertino_style_poc
+description: "Sample only: Button and Switch rewritten on the rule-based style model (StyleTheme / StyleScope)."
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Colors, CupertinoTheme, CupertinoUserInterfaceLevel, ... and the original
+  # Button / Switch the tests compare against.
+  cupertino_ui:
+    path: ../cupertino_ui
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
