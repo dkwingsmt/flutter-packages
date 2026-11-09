@@ -1,0 +1,22 @@
+name: style_codegen
+description: "Code generator for the rule-based style model: reads Dart specs (specs/), writes the generated classes and copies the engine (engine/) into a design-language package."
+version: 0.0.1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  analyzer: ^14.0.0
+  path: ^1.9.0
+  # Specs are Dart and are resolved (never run): the types they name come
+  # from these packages.
+  flutter:
+    sdk: flutter
+  cupertino_ui:
+    path: /Users/tongmu/dev/packages/packages/cupertino_ui
+
+dev_dependencies:
+  test: any
+  flutter_lints: ^6.0.0

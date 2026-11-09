@@ -1,0 +1,8 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # The engine is copied into a design-language package and compiled
+    # there (it imports that package's style_library.dart).
+    - engine/widgets.dart
+    - build/**

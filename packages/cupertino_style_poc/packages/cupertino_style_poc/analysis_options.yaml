@@ -3,6 +3,8 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - build/**
+    # Snippets that must not compile (checked by test/type_safety_test.dart).
+    - test/fixtures/**
     - android/**
     - ios/**
     - web/**
