@@ -4,7 +4,7 @@
 
 ---
 
-Drawing on benchmark data from the rule-engine prototype and the Cupertino component prototype, this section covers our two-stage caching mechanism and theme animation performance, architectural constraints for tree-shaking, integration with existing framework primitives, provenance debugging (`debugSources`), and unit-testing APIs.
+Drawing on benchmark data from the rule-engine prototype and the Cupertino component prototype, this section covers the two-stage caching mechanism and theme animation performance, architectural constraints for tree-shaking, integration with existing framework primitives, provenance debugging (`debugSources`), and unit-testing APIs.
 
 ---
 
@@ -29,13 +29,13 @@ Because Step 4 of Section 4 designs default rule tables and theme rules as **`co
 
 ### 60fps Theme Interpolation Animation Benchmark
 
-We built a 60fps theme animation benchmark in the pure-Dart rule-engine prototype, mounting **17 core `material_ui` component groups × 50 instances per group (850 component instances in total, spanning 63 distinct active state combinations)** and simulating a 60-frame `ColorScheme.lerp(light, dark, t)` animation.
+A 60fps theme animation benchmark in the pure-Dart rule-engine prototype mounts **17 core `material_ui` component groups × 50 instances per group (850 component instances in total, spanning 63 distinct active state combinations)** and simulates a 60-frame `ColorScheme.lerp(light, dark, t)` animation.
 
-We compared two implementation paths on the same rule engine (`flutter test` JIT mode with `assert`s enabled, taking the median of 5 runs after warm-up):
+Two implementation paths were compared on the same rule engine (`flutter test` JIT mode with `assert`s enabled, taking the median of 5 runs after warm-up):
 - **Path B (Baseline: rebuilding default rules with newly interpolated colors every frame)**: Allocates 294 new rule objects and re-runs 63 full rule-chain scans and merges on every frame, taking **607µs** per frame.
 - **Path A (Proposed: `const` symbolic rules + `SymbolicCache` + theme-level `BoundCache`)**: Across the 60-frame animation, Stage 1 `SymbolicCache` incurs 63 misses on Frame 1 only (first-frame time: 719µs) and achieves a **100% symbolic cache hit rate (0 misses) from Frame 2 through Frame 60**. Subsequent frames only perform token binding once for each of the 63 active state combinations, dropping steady-state per-frame time to **197–205µs**—roughly **one-third** the time of rebuilding rules.
 - **Local scope benchmark (Path AS)**: Placing half of the instances (425 widgets) inside a local `StyleScope` subtree that overrides the `onSurface` token similarly misses the symbolic cache only on Frame 1, with subsequent frames taking ~**390µs** in total.
-- **Cache consistency verification**: Across all reachable state combinations of the 17 component groups, 6 color schemes, and multiple intermediate interpolation frames, we performed **118,683** field-by-field comparisons: the output of two-stage caching matched full from-scratch evaluation with 0 diffs.
+- **Cache consistency verification**: Across all reachable state combinations of the 17 component groups, 6 color schemes, and multiple intermediate interpolation frames, **118,683** field-by-field comparisons were run: the output of two-stage caching matched full from-scratch evaluation with 0 diffs.
 
 Note: These numbers come from JIT-mode tests on the pure-Dart rule-engine prototype to measure relative cost between the two architectural paths; they do not yet include AOT/Profile-mode frame times on a full widget tree.
 
@@ -83,7 +83,7 @@ Button, ButtonWhen(appearance: {tinted}, disabled: false, pressed: true), bright
 
 The output shows which layer (`defaults`, `theme`, `scope #n`, or `call site`) and rule index won for each field; sub-rules expanded from `CupertinoDynamicColor` identify the matched environment slot (such as `dark normal-contrast slot`); and derived properties print their upstream source and transformation steps (`field`, `token`, `custom token`, `computed`, `opacity`, `opaque`, `parts`).
 
-There are currently two known limitations: first, provenance for derived tokens (such as `tintedFill`) stops at the token name without recursively printing its upstream tokens (we can add a recursive lookup across the token channel in `debugSources` later without affecting runtime logic); second, reads inside a `.computed` callback live inside a function body and can only be reported as `computed rule`.
+There are currently two known limitations: first, provenance for derived tokens (such as `tintedFill`) stops at the token name without recursively printing its upstream tokens (a recursive lookup across the token channel can be added to `debugSources` later without affecting runtime logic); second, reads inside a `.computed` callback live inside a function body and can only be reported as `computed rule`.
 
 ---
 
@@ -121,7 +121,7 @@ expect(pressedDarkStyle.foregroundColor, const Color(0xFFFFD60A));
 expect(pressedDarkStyle.iconColor, const Color(0xFFFFD60A));
 ```
 
-Furthermore, our audit of a large internal codebase found 34 files (27 of them test files) that call `.style?.X?.resolve(states)` directly, including theme unit tests that never `pump` a widget tree at all and instead run pure-Dart assertions against a theme configuration. Because our rule engine runs independently of the widget tree (as demonstrated by `StyleResolver.resolve` in the prototype), generated components can also expose a pure-data resolution entry point that takes a rule list (such as a theme rule set) and a target state combination without requiring a `BuildContext`, allowing widget-free theme unit tests to call it directly.
+Furthermore, an audit of a large internal codebase found 34 files (27 of them test files) that call `.style?.X?.resolve(states)` directly, including theme unit tests that never `pump` a widget tree at all and instead run pure-Dart assertions against a theme configuration. Because the rule engine runs independently of the widget tree (as demonstrated by `StyleResolver.resolve` in the prototype), generated components can also expose a pure-data resolution entry point that takes a rule list (such as a theme rule set) and a target state combination without requiring a `BuildContext`, allowing widget-free theme unit tests to call it directly.
 
 ---
 
