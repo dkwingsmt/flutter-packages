@@ -88,7 +88,7 @@ Color tintedBackground(Color c) => mapColorVariants(
 
 /// An iOS-style button whose look comes from rules: library defaults, then
 /// [StyleTheme], the enclosing [StyleScope]s, the flat parameters below,
-/// and finally [states].
+/// and finally [rules].
 class Button extends StatefulWidget {
   const Button({
     super.key,
@@ -109,7 +109,7 @@ class Button extends StatefulWidget {
     this.autofocus = false,
     this.mouseCursor,
     this.onLongPress,
-    this.states = const <ButtonRule>[],
+    this.rules = const <ButtonRule>[],
     required this.onPressed,
   });
 
@@ -132,7 +132,7 @@ class Button extends StatefulWidget {
     this.autofocus = false,
     this.mouseCursor,
     this.onLongPress,
-    this.states = const <ButtonRule>[],
+    this.rules = const <ButtonRule>[],
     required this.onPressed,
   }) : appearance = ButtonAppearance.tinted;
 
@@ -155,7 +155,7 @@ class Button extends StatefulWidget {
     this.autofocus = false,
     this.mouseCursor,
     this.onLongPress,
-    this.states = const <ButtonRule>[],
+    this.rules = const <ButtonRule>[],
     required this.onPressed,
   }) : appearance = ButtonAppearance.filled;
 
@@ -174,7 +174,7 @@ class Button extends StatefulWidget {
   /// environment (brightness x contrast x elevation): it is expanded into
   /// one plain color per environment when the chain is built, the same way
   /// as in a theme rule. To change only some environments, add a rule with
-  /// an environment condition to [states]; it may hold a plain color or a
+  /// an environment condition to [rules]; it may hold a plain color or a
   /// dynamic color (only the dynamic color's slots inside the condition are
   /// taken).
   final Color? color;
@@ -213,7 +213,7 @@ class Button extends StatefulWidget {
   final MouseCursor? mouseCursor;
 
   /// Call-site rules, after the flat parameters.
-  final List<ButtonRule> states;
+  final List<ButtonRule> rules;
 
   final FocusNode? focusNode;
   final ValueChanged<bool>? onFocusChange;
@@ -231,7 +231,7 @@ class Button extends StatefulWidget {
 
   /// The call-site provider: one rule per flat parameter (a region rule
   /// where the field's default is partitioned, else a rule under
-  /// `ButtonWhen()`), then [states].
+  /// `ButtonWhen()`), then [rules].
   List<ButtonRule> callSiteRules() {
     final ButtonAppearance a = appearance;
     final List<ButtonRule> out = <ButtonRule>[];
@@ -299,7 +299,7 @@ class Button extends StatefulWidget {
         out.add(ButtonRule.mouseCursor(enabled: cursor, disabled: cursor));
       }
     }
-    out.addAll(states);
+    out.addAll(rules);
     return out;
   }
 
@@ -307,8 +307,8 @@ class Button extends StatefulWidget {
   State<Button> createState() => _ButtonWidgetState();
 
   /// The resolved style of a button at any state (design doc 7.6): the
-  /// defaults, the theme and scopes visible at [context], then [states].
-  /// Pass `states: button.callSiteRules()` to include an instance's flat
+  /// defaults, the theme and scopes visible at [context], then [rules].
+  /// Pass `rules: button.callSiteRules()` to include an instance's flat
   /// parameters. Delegates to the generated [resolveButtonStyle] (a
   /// generator can't add a static member to this hand-written class).
   static ButtonStyle resolveStyle(
@@ -321,7 +321,7 @@ class Button extends StatefulWidget {
     Brightness? brightness,
     bool? highContrast,
     CupertinoUserInterfaceLevelData? interfaceLevel,
-    List<ButtonRule> states = const <ButtonRule>[],
+    List<ButtonRule> rules = const <ButtonRule>[],
   }) =>
       resolveButtonStyle(context,
           appearance: appearance,
@@ -332,7 +332,7 @@ class Button extends StatefulWidget {
           brightness: brightness,
           highContrast: highContrast,
           interfaceLevel: interfaceLevel,
-          states: states);
+          rules: rules);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

@@ -108,13 +108,13 @@ void main() {
       expect(s.side!.width, 2);
     });
 
-    testWidgets('theme derives the whole, the call site (states:) patches it', (WidgetTester tester) async {
+    testWidgets('theme derives the whole, the call site (rules:) patches it', (WidgetTester tester) async {
       await tester.pumpWidget(inEnvironment(
           allEnvironments.first,
           StyleTheme(
             rules: const <Rule>[ButtonRule.always(style: .derive(side: .computed(sideByState)))],
             child: Button(
-              states: const <ButtonRule>[.always(style: .derive(side: .parts(color: .value(blue))))],
+              rules: const <ButtonRule>[.always(style: .derive(side: .parts(color: .value(blue))))],
               onPressed: () {},
               child: const Text('b'),
             ),

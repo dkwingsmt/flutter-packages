@@ -4,7 +4,7 @@
 
 ---
 
-This section walks through five representative scenarios: call-site flat parameters paired with `states:`, global themes and local `StyleScope` overrides (including region constructors), cross-field derivations and custom `TokenGroup`s, composite component slots, and shared rules across Material's multiple button widgets.
+This section walks through five representative scenarios: call-site flat parameters paired with `rules:`, global themes and local `StyleScope` overrides (including region constructors), cross-field derivations and custom `TokenGroup`s, composite component slots, and shared rules across Material's multiple button widgets.
 
 Note: Scenarios 1 through 4 use the new `Button` component in `cupertino_ui` (with generated class names `ButtonStyle`, `ButtonRule`, and `ButtonWhen`). The code in Scenarios 1 through 3 matches the actual API implemented in the sibling prototype repository; `DatePicker` in Scenario 4 and the Material buttons in Scenario 5 have not been merged into that prototype yet and illustrate the target API design.
 
@@ -39,14 +39,14 @@ FilledButton(
 
 ### After
 
-Pass maintainer-curated flat parameters (`color` and `disabledColor`) directly for common properties. Internally, the component maps them to their corresponding state regions via generated region constructors, so passing `color` alone never clobbers the default disabled state. To append a multi-property tweak when pressed on this specific instance, add a single `.when(pressed: true, ...)` rule in `states:`:
+Pass maintainer-curated flat parameters (`color` and `disabledColor`) directly for common properties. Internally, the component maps them to their corresponding state regions via generated region constructors, so passing `color` alone never clobbers the default disabled state. To append a multi-property tweak when pressed on this specific instance, add a single `.when(pressed: true, ...)` rule in `rules:`:
 
 ```dart
 Button(
   appearance: ButtonAppearance.filled,
   color: CupertinoColors.systemRed,
   disabledColor: CupertinoColors.systemGrey4,
-  states: const [
+  rules: const [
     .when(
       pressed: true,
       style: .values(
@@ -334,7 +334,7 @@ StyleTheme(
 )
 ```
 
-Note: Because `foregroundColor` shares the same default state partitioning across all five appearances (one value for enabled and `onSurface` × 0.38 for disabled), calling `CommonButtonRule.foregroundColor(enabled: brand)` on the superclass does not constrain appearance and updates all five button types at once. To update only one appearance, call `OutlinedButtonRule.foregroundColor(enabled: brand)` on the corresponding subclass. On an individual widget instance, the parameter type narrows directly to the corresponding subclass (for example, `OutlinedButton(states: ...)` takes `List<OutlinedButtonRule>`), so you never repeat the appearance.
+Note: Because `foregroundColor` shares the same default state partitioning across all five appearances (one value for enabled and `onSurface` × 0.38 for disabled), calling `CommonButtonRule.foregroundColor(enabled: brand)` on the superclass does not constrain appearance and updates all five button types at once. To update only one appearance, call `OutlinedButtonRule.foregroundColor(enabled: brand)` on the corresponding subclass. On an individual widget instance, the parameter type narrows directly to the corresponding subclass (for example, `OutlinedButton(rules: ...)` takes `List<OutlinedButtonRule>`), so you never repeat the appearance.
 
 ---
 

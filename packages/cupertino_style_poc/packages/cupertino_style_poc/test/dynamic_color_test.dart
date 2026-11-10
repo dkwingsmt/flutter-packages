@@ -315,7 +315,7 @@ void main() {
                 style: ButtonStyle(backgroundColor: plain)),
           ]),
           (ResolvedEnvironment e) => isDark(e) && e.highContrast);
-      // The same through a states: rule on the call site.
+      // The same through a rule in rules: on the call site.
       for (final ResolvedEnvironment e in allEnvironments) {
         final Map<ButtonField, Object> got = button(base, e, callSite: const <ButtonRule>[
           ButtonRule(ButtonWhen(brightness: Brightness.dark, highContrast: true),
@@ -360,7 +360,7 @@ void main() {
         expect(button(any, e)[ButtonField.focusColor], isDark(e) ? variant(eight, e) : null, reason: envName(e));
         expect(button(any, e, pressed: true)[ButtonField.focusColor], variant(eight, e), reason: envName(e));
       }
-      // states: with a high-contrast condition and a TextStyle color.
+      // rules: with a high-contrast condition and a TextStyle color.
       for (final ResolvedEnvironment e in allEnvironments) {
         final TextStyle? t = button(base, e, callSite: const <ButtonRule>[
           ButtonRule(ButtonWhen(highContrast: true), style: ButtonStyle(textStyle: TextStyle(color: eight))),

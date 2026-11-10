@@ -290,13 +290,13 @@ void main() {
     expect(compared, 24);
   });
 
-  testWidgets('call site: a Switch callback rule in states: (both selected ends)', (WidgetTester tester) async {
+  testWidgets('call site: a Switch callback rule in rules: (both selected ends)', (WidgetTester tester) async {
     await tester.pumpWidget(inEnvironment(allEnvironments.first, const SizedBox()));
     final BuildContext ctx = tester.element(find.byType(SizedBox));
     final Switch sw = Switch(
       value: true,
       onChanged: (bool _) {},
-      states: const <SwitchRule>[SwitchRule(SwitchWhen(), style: SwitchStyleSpec(thumbColor: .computed(thumbFromTrack)))],
+      rules: const <SwitchRule>[SwitchRule(SwitchWhen(), style: SwitchStyleSpec(thumbColor: .computed(thumbFromTrack)))],
     );
     for (final bool selected in <bool>[false, true]) {
       final SwitchStyle s = sw.resolveOwn(ctx, selected: selected);

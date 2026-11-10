@@ -391,7 +391,7 @@ void main() {
         WidgetState.hovered: SystemMouseCursors.click,
         WidgetState.any: SystemMouseCursors.basic,
       }),
-      states: switchRulesFromWidgetStates(
+      rules: switchRulesFromWidgetStates(
         trackOutlineColor: WidgetStateProperty<Color?>.fromMap(<WidgetStatesConstraint, Color?>{
           WidgetState.selected & WidgetState.focused: const Color(0xFF00FF00),
           WidgetState.selected: const Color(0xFFFF0000),
@@ -423,7 +423,7 @@ void main() {
     final BuildContext ctx = tester.element(find.byType(SizedBox));
     final Button b = Button(
       onPressed: () {},
-      states: const <ButtonRule>[
+      rules: const <ButtonRule>[
         ButtonRule(ButtonWhen(), style: ButtonStyleSpec(backgroundColor: .fromCustomToken(Brand.accent))),
       ],
       child: const SizedBox(),

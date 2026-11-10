@@ -106,7 +106,7 @@ Safeguards operate across four levels, and all runtime diagnostics are wrapped i
 
 ## 7.6 Unit Testing and External Resolution API (`X.resolveStyle`)
 
-In the legacy system, some unit tests assert colors by reading `widget.backgroundColor` directly. In the new model, property getters on the widget only return the raw flat parameters passed at the call site; when styles come from `StyleTheme`, `StyleScope`, `states:` rule chains, or cross-field derivations, callers query the resolution API to obtain the final resolved values.
+In the legacy system, some unit tests assert colors by reading `widget.backgroundColor` directly. In the new model, property getters on the widget only return the raw flat parameters passed at the call site; when styles come from `StyleTheme`, `StyleScope`, `rules:` rule chains, or cross-field derivations, callers query the resolution API to obtain the final resolved values.
 
 Every generated component provides a static **`X.resolveStyle(BuildContext context, ...)`** method (such as `Button.resolveStyle(context, appearance: .filled, pressed: true)`). Tests and external callers can not only retrieve the complete non-null `ButtonStyle` for the current state, but also pass **any target state combination directly**—asserting resolved styles under specific interaction states and environment settings without simulating gesture presses or pumping animation frames in the test:
 

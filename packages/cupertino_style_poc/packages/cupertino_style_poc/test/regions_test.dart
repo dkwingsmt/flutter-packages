@@ -544,13 +544,13 @@ void main() {
     expect(bg(Brightness.dark, disabled: true), isNot(CupertinoColors.systemRed.darkColor));
   });
 
-  test('call site: a region rule in states: follows the flat parameters, an explicit rule after it refines a region', () {
+  test('call site: a region rule in rules: follows the flat parameters, an explicit rule after it refines a region', () {
     const Color mint = Color(0xFF00C7BE);
     const Color teal = Color(0xFF30B0C7);
     final List<ButtonRule> callSite = const Button.tinted(
       color: CupertinoColors.systemRed,
       onPressed: null,
-      states: <ButtonRule>[
+      rules: <ButtonRule>[
         ButtonRule.backgroundColor(tintedEnabled: mint),
         ButtonRule(ButtonWhen(pressed: true), style: ButtonStyle(backgroundColor: teal)),
       ],
@@ -567,7 +567,7 @@ void main() {
             appearance: ButtonAppearance.tinted,
             sizeStyle: ButtonSize.medium,
             env: light))[ButtonField.backgroundColor];
-    expect(bg(), mint); // states: wins over color:
+    expect(bg(), mint); // rules: wins over color:
     expect(bg(pressed: true), teal); // the later explicit rule refines the region
     expect(bg(disabled: true), CupertinoColors.tertiarySystemFill.color); // other regions untouched
   });

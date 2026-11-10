@@ -534,7 +534,7 @@ final class ButtonStyle extends ButtonStyleSpec {
 /// A [Button] rule: condition + one payload, `style:` (a [ButtonStyleSpec]
 /// or its all-values form [ButtonStyle]). Goes in StyleTheme / StyleScope
 /// rule lists (mixed with other components' rules) and in
-/// `Button(states: ...)`. A typed list spread writes the component name once
+/// `Button(rules: ...)`. A typed list spread writes the component name once
 /// for a group of rules: `...<ButtonRule>[.when(...), .always(...)]`.
 ///
 /// Ways to write one:
@@ -1022,7 +1022,7 @@ Minterm buttonMinterm({
 
 /// The resolved [ButtonStyle] at any state (design doc 7.6), without pumping
 /// gestures: the library defaults, the StyleTheme and StyleScopes visible
-/// at [context], then [states] (call-site rules, e.g. a widget's own).
+/// at [context], then [rules] (call-site rules, e.g. a widget's own).
 /// Environment dimensions not given come from the StyleTheme / StyleScope
 /// environment, then from [context]. Backs `Button.resolveStyle`.
 ButtonStyle resolveButtonStyle(
@@ -1035,21 +1035,21 @@ ButtonStyle resolveButtonStyle(
   Brightness? brightness,
   bool? highContrast,
   CupertinoUserInterfaceLevelData? interfaceLevel,
-  List<ButtonRule> states = const <ButtonRule>[],
+  List<ButtonRule> rules = const <ButtonRule>[],
 }) {
   final StyleNode node = StyleTheme.peekNode(context);
   final ResolvedEnvironment env = node.effectiveEnvironment
       .merge(StyleEnvironment(brightness: brightness, highContrast: highContrast, interfaceLevel: interfaceLevel))
       .resolve(context);
-  return ButtonStyle.fromValues(StyleResolver<ButtonField>(buttonStyle).resolve(node, states, buttonMinterm(disabled: disabled, pressed: pressed, focused: focused, appearance: appearance, sizeStyle: sizeStyle, env: env)));
+  return ButtonStyle.fromValues(StyleResolver<ButtonField>(buttonStyle).resolve(node, rules, buttonMinterm(disabled: disabled, pressed: pressed, focused: focused, appearance: appearance, sizeStyle: sizeStyle, env: env)));
 }
 
 /// [resolveButtonStyle] without a widget tree (design doc 7.6): [theme] is
-/// a StyleTheme rule list, [states] the call-site rules, and the
+/// a StyleTheme rule list, [rules] the call-site rules, and the
 /// environment is given (every environment dimension).
 ButtonStyle resolveButtonStyleFromRules({
   List<Rule> theme = const <Rule>[],
-  List<ButtonRule> states = const <ButtonRule>[],
+  List<ButtonRule> rules = const <ButtonRule>[],
   bool disabled = false,
   bool pressed = false,
   bool focused = false,
@@ -1061,5 +1061,5 @@ ButtonStyle resolveButtonStyleFromRules({
 }) {
   final StyleNode node = StyleNode.root(rules: theme);
   final ResolvedEnvironment env = ResolvedEnvironment(brightness: brightness, highContrast: highContrast, interfaceLevel: interfaceLevel);
-  return ButtonStyle.fromValues(StyleResolver<ButtonField>(buttonStyle).resolve(node, states, buttonMinterm(disabled: disabled, pressed: pressed, focused: focused, appearance: appearance, sizeStyle: sizeStyle, env: env)));
+  return ButtonStyle.fromValues(StyleResolver<ButtonField>(buttonStyle).resolve(node, rules, buttonMinterm(disabled: disabled, pressed: pressed, focused: focused, appearance: appearance, sizeStyle: sizeStyle, env: env)));
 }

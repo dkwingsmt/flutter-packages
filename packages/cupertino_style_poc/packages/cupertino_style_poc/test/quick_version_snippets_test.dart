@@ -120,7 +120,7 @@ class Probe {
 
 /// Pumps [build] in every environment and resolves every button in [ids]
 /// in every state (`resolveStyle` reads the button's own chain: theme,
-/// scopes, flat parameters, `states:`).
+/// scopes, flat parameters, `rules:`).
 Future<List<Probe>> probeButtons(WidgetTester tester, Widget Function(ResolvedEnvironment e) build,
     {List<String> ids = CheckoutPanel.buttons}) async {
   final List<Probe> out = <Probe>[];
@@ -305,15 +305,15 @@ void main() {
   //     child: const Text('Save'),
   //   )
   //
-  // Flat parameters desugar into rules placed right before `states:` (for instance, `disabledColor`
+  // Flat parameters desugar into rules placed right before `rules:` (for instance, `disabledColor`
   // above is sugar for a `disabled: true` rule). When tweaking other states on a single widget instance,
-  // `states:` only needs to specify the states being added or changed—unlike `WidgetStateProperty.resolveWith`,
+  // `rules:` only needs to specify the states being added or changed—unlike `WidgetStateProperty.resolveWith`,
   // where you have to spell out every state branch to avoid wiping out defaults:
   //
   //   Button(
   //     appearance: ButtonAppearance.prominent,
   //     tintColor: CupertinoColors.systemRed,
-  //     states: [
+  //     rules: [
   //       // Equivalent to passing disabledColor: CupertinoColors.systemGrey4 above
   //       ButtonRule(ButtonWhen(disabled: true),
   //           style: ButtonStyle(tintColor: CupertinoColors.systemGrey4)),
@@ -345,16 +345,16 @@ void main() {
             Color? disabledColor,
             ButtonAppearance appearance = ButtonAppearance.filled,
             bool includeDisabledRule = true,
-            bool states = true}) =>
+            bool rules = true}) =>
         Button(
           key: const ValueKey<String>('save'),
           appearance: appearance,
           color: CupertinoColors.systemRed,
           disabledColor: disabledColor,
           foregroundColor: foregroundColor,
-          states: <ButtonRule>[
+          rules: <ButtonRule>[
             if (includeDisabledRule) disabledGrey4,
-            if (states) pressedYellow,
+            if (rules) pressedYellow,
           ],
           onPressed: save,
           child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -409,19 +409,19 @@ void main() {
       }
     });
 
-    testWidgets('disabledColor: systemGrey4 is equivalent to ButtonRule(ButtonWhen(disabled: true), style: ButtonStyle(backgroundColor: systemGrey4)) in states:',
+    testWidgets('disabledColor: systemGrey4 is equivalent to ButtonRule(ButtonWhen(disabled: true), style: ButtonStyle(backgroundColor: systemGrey4)) in rules:',
         (WidgetTester tester) async {
       final List<Probe> viaParam = await probeButtons(
           tester,
           (ResolvedEnvironment e) => inEnvironment(
               e,
               saveButtonWithStates(
-                  disabledColor: CupertinoColors.systemGrey4, includeDisabledRule: false, states: false)),
+                  disabledColor: CupertinoColors.systemGrey4, includeDisabledRule: false, rules: false)),
           ids: <String>['save']);
       final List<Probe> viaStates = await probeButtons(
           tester,
           (ResolvedEnvironment e) =>
-              inEnvironment(e, saveButtonWithStates(includeDisabledRule: true, states: false)),
+              inEnvironment(e, saveButtonWithStates(includeDisabledRule: true, rules: false)),
           ids: <String>['save']);
       forPairs(viaParam, viaStates, (Probe x, Probe y) {
         expect(x.style, y.style, reason: x.name);
@@ -433,14 +433,14 @@ void main() {
       });
     });
 
-    testWidgets('states: [pressed rule] changes only foregroundColor, only in pressed states; rest / focused / disabled unchanged',
+    testWidgets('rules: [pressed rule] changes only foregroundColor, only in pressed states; rest / focused / disabled unchanged',
         (WidgetTester tester) async {
       for (final ButtonAppearance appearance in ButtonAppearance.values) {
         final List<Probe> a = await probeButtons(
             tester, (ResolvedEnvironment e) => inEnvironment(e, saveButtonWithStates(appearance: appearance)),
             ids: <String>['save']);
         final List<Probe> b = await probeButtons(
-            tester, (ResolvedEnvironment e) => inEnvironment(e, saveButtonWithStates(appearance: appearance, states: false)),
+            tester, (ResolvedEnvironment e) => inEnvironment(e, saveButtonWithStates(appearance: appearance, rules: false)),
             ids: <String>['save']);
         int changed = 0;
         forPairs(a, b, (Probe x, Probe y) {
@@ -468,7 +468,7 @@ void main() {
       }
     });
 
-    testWidgets('states: the painted text color is systemYellow while pressed and back after release', (WidgetTester tester) async {
+    testWidgets('rules: the painted text color is systemYellow while pressed and back after release', (WidgetTester tester) async {
       for (final ButtonAppearance appearance in ButtonAppearance.values) {
         for (final ResolvedEnvironment e in allEnvironments) {
           await tester.pumpWidget(inEnvironment(e, saveButtonWithStates(appearance: appearance)));
@@ -490,11 +490,11 @@ void main() {
       }
     });
 
-    testWidgets('flat parameters are rules placed before states:, so states: wins only where it matches',
+    testWidgets('flat parameters are rules placed before rules:, so rules: wins only where it matches',
         (WidgetTester tester) async {
       final Button b = saveButtonWithStates(foregroundColor: CupertinoColors.systemGreen) as Button;
       final List<ButtonRule> rules = b.callSiteRules();
-      expect(rules.last, same(pressedYellow), reason: 'states: come last');
+      expect(rules.last, same(pressedYellow), reason: 'rules: come last');
       // Flat parameters become region rules (ButtonRule.backgroundColor(filledEnabled: ...), ...); read
       // their values from the engine rules they expand into.
       Object? value(ButtonRule r, ButtonField f) => r.toRaws().single.style.values[f];
@@ -515,7 +515,7 @@ void main() {
   // -------------------------------------------------------------------------
   // 2. Themes and subtree overrides: touch only the states and properties you specify, and combine brightness with interaction states directly
   //
-  // Rules assemble into a single chain—`component defaults -> StyleTheme -> outer-to-inner StyleScope -> call-site flat params -> call-site states:`—
+  // Rules assemble into a single chain—`component defaults -> StyleTheme -> outer-to-inner StyleScope -> call-site flat params -> call-site rules:`—
   // where later rules win per property. Conditions are flat, and omitted dimensions are unconstrained:
   //
   //   StyleTheme(
@@ -551,7 +551,7 @@ void main() {
   // Written here as [themeEnabledRule], [themeDarkPressedRule],
   // [scopeOrangeRule] and [docTree].
   group('snippet 2: theme and local override', () {
-    testWidgets('the chain: defaults -> StyleTheme -> StyleScopes outer to inner -> flat parameters -> states:, later wins per field',
+    testWidgets('the chain: defaults -> StyleTheme -> StyleScopes outer to inner -> flat parameters -> rules:, later wins per field',
         (WidgetTester tester) async {
       BorderRadius r(double v) => BorderRadius.all(Radius.circular(v));
       ButtonRule radius(double v) =>
@@ -560,7 +560,7 @@ void main() {
       final ButtonRule themeRule =
           ButtonRule(const ButtonWhen(), style: ButtonStyle(borderRadius: r(1), padding: themePadding));
       Future<ButtonStyle> resolve(
-          {bool theme = true, bool outer = true, bool inner = true, bool flat = true, bool states = true}) async {
+          {bool theme = true, bool outer = true, bool inner = true, bool flat = true, bool rules = true}) async {
         await tester.pumpWidget(inEnvironment(
             allEnvironments.first,
             StyleTheme(
@@ -572,7 +572,7 @@ void main() {
                   child: Button(
                     key: const ValueKey<String>('b'),
                     borderRadius: flat ? r(4) : null,
-                    states: <ButtonRule>[if (states) radius(5)],
+                    rules: <ButtonRule>[if (rules) radius(5)],
                     onPressed: save,
                     child: const Text('b'),
                   ),
@@ -584,11 +584,11 @@ void main() {
       }
 
       expect((await resolve()).borderRadius, r(5));
-      expect((await resolve(states: false)).borderRadius, r(4));
-      expect((await resolve(states: false, flat: false)).borderRadius, r(3));
-      expect((await resolve(states: false, flat: false, inner: false)).borderRadius, r(2));
-      expect((await resolve(states: false, flat: false, inner: false, outer: false)).borderRadius, r(1));
-      expect((await resolve(states: false, flat: false, inner: false, outer: false, theme: false)).borderRadius, r(12),
+      expect((await resolve(rules: false)).borderRadius, r(4));
+      expect((await resolve(rules: false, flat: false)).borderRadius, r(3));
+      expect((await resolve(rules: false, flat: false, inner: false)).borderRadius, r(2));
+      expect((await resolve(rules: false, flat: false, inner: false, outer: false)).borderRadius, r(1));
+      expect((await resolve(rules: false, flat: false, inner: false, outer: false, theme: false)).borderRadius, r(12),
           reason: 'the large-size default');
       // Per field: the theme's padding survives every later radius.
       expect((await resolve()).padding, themePadding);
@@ -930,7 +930,7 @@ void main() {
           style: ButtonStyle(foregroundColor: CupertinoColors.white));
       Widget panel({required bool override}) => Button(
             key: const ValueKey<String>('b'),
-            states: <ButtonRule>[if (override) darkWhite],
+            rules: <ButtonRule>[if (override) darkWhite],
             onPressed: save,
             child: const SizedBox(key: ValueKey<String>('b.probe'), width: 4, height: 4),
           );
@@ -1048,7 +1048,7 @@ void main() {
     }
 
     Widget button({Color? color, Color? foregroundColor, Color? disabledColor, Color? focusColor,
-            List<ButtonRule> states = const <ButtonRule>[]}) =>
+            List<ButtonRule> rules = const <ButtonRule>[]}) =>
         Button(
           key: const ValueKey<String>('b'),
           appearance: ButtonAppearance.filled,
@@ -1056,7 +1056,7 @@ void main() {
           foregroundColor: foregroundColor,
           disabledColor: disabledColor,
           focusColor: focusColor,
-          states: states,
+          rules: rules,
           onPressed: save,
           child: const Text('b'),
         );
@@ -1077,7 +1077,7 @@ void main() {
       }
     });
 
-    testWidgets('rule styles take dynamic colors (theme, scope, states:) and expand them per environment',
+    testWidgets('rule styles take dynamic colors (theme, scope, rules:) and expand them per environment',
         (WidgetTester tester) async {
       await expectExpanded(
           tester, (ResolvedEnvironment e) => inEnvironment(e, StyleTheme(rules: const <Rule>[eightBackground], child: button())),
@@ -1088,11 +1088,11 @@ void main() {
               inEnvironment(e, StyleTheme(child: StyleScope(rules: const <Rule>[eightBackground], child: button()))),
           what: 'scope');
       await expectExpanded(
-          tester, (ResolvedEnvironment e) => inEnvironment(e, button(states: const <ButtonRule>[eightBackground])),
-          what: 'states:');
+          tester, (ResolvedEnvironment e) => inEnvironment(e, button(rules: const <ButtonRule>[eightBackground])),
+          what: 'rules:');
     });
 
-    testWidgets('overriding one environment leaves every other environment unchanged (theme rule and states:)',
+    testWidgets('overriding one environment leaves every other environment unchanged (theme rule and rules:)',
         (WidgetTester tester) async {
       const Color override = Color(0xFF00FF00);
       const ButtonRule darkHc = ButtonRule(
@@ -1102,7 +1102,7 @@ void main() {
           e,
           StyleTheme(
               rules: <Rule>[eightBackground, ...extraTheme],
-              child: button(states: <ButtonRule>[if (viaStates) darkHc])));
+              child: button(rules: <ButtonRule>[if (viaStates) darkHc])));
       final List<Probe> plain = await probeButtons(tester, base, ids: <String>['b']);
       for (final bool viaStates in <bool>[false, true]) {
         final List<Probe> over = await probeButtons(
@@ -1114,7 +1114,7 @@ void main() {
             expect(x.style.backgroundColor, override, reason: x.name);
             expect(blank(x.style, background: true), blank(y.style, background: true), reason: x.name);
           } else {
-            expect(x.style, y.style, reason: '${x.name} (via ${viaStates ? 'states:' : 'theme'})');
+            expect(x.style, y.style, reason: '${x.name} (via ${viaStates ? 'rules:' : 'theme'})');
             expect(x.style.backgroundColor, variant(eight, x.env));
           }
         });
@@ -1181,7 +1181,7 @@ void main() {
       final Switch sw = Switch(
         value: true,
         onChanged: (bool _) {},
-        states: switchRulesFromWidgetStates(
+        rules: switchRulesFromWidgetStates(
           trackOutlineColor: WidgetStateProperty<Color?>.fromMap(<WidgetStatesConstraint, Color?>{
             WidgetState.selected & WidgetState.focused: const Color(0xFF00FF00),
             WidgetState.selected: const Color(0xFFFF0000),

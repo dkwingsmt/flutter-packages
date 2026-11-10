@@ -4,7 +4,7 @@
 
 // Interactive demo of Button / Switch on the rule-based
 // style model. Five sections:
-//   1. Call site: dynamic colors and a per-state tweak with `states:`.
+//   1. Call site: dynamic colors and a per-state tweak with `rules:`.
 //   2. Global theme + local scope + dialog.
 //   3. Derive: the icon follows the foreground; one plain rule breaks it.
 //   4. Channel isolation: changing a button rule rebuilds only buttons.
@@ -217,7 +217,7 @@ class _CallSiteSectionState extends State<CallSiteSection> {
         ),
         Button.tinted(
           key: const Key('pressed-tweak'),
-          states: const <ButtonRule>[
+          rules: const <ButtonRule>[
             ButtonRule(
               ButtonWhen(pressed: true),
               style: ButtonStyle(backgroundColor: CupertinoColors.systemOrange, pressedOpacity: 1.0),
@@ -228,7 +228,7 @@ class _CallSiteSectionState extends State<CallSiteSection> {
         ),
         const Button.tinted(
           key: Key('pressed-tweak-disabled'),
-          states: <ButtonRule>[
+          rules: <ButtonRule>[
             ButtonRule(
               ButtonWhen(pressed: true),
               style: ButtonStyle(backgroundColor: CupertinoColors.systemOrange, pressedOpacity: 1.0),
@@ -527,7 +527,7 @@ class RegionRulesSection extends StatelessWidget {
           'regions; the filled button is another region and keeps the theme look. A rule with a finer condition '
           'after them turns pressed tinted buttons teal. SwitchRule.trackColor / thumbColor / opacity restyle the '
           'switches per region. Outside the scope, a disabled filled button sets only its filledDisabled region '
-          'through states:, and a switch sets only its unselected track.',
+          'through rules:, and a switch sets only its unselected track.',
       children: <Widget>[
         StyleScope(
           rules: regionScopeRules,
@@ -547,14 +547,14 @@ class RegionRulesSection extends StatelessWidget {
         ),
         const Button.filled(
           key: Key('region-states'),
-          states: <ButtonRule>[ButtonRule.backgroundColor(filledDisabled: CupertinoColors.systemRed)],
+          rules: <ButtonRule>[ButtonRule.backgroundColor(filledDisabled: CupertinoColors.systemRed)],
           onPressed: null,
           child: Text('Disabled, red'),
         ),
         const _RegionSwitch(
           key: Key('region-states-switch'),
           initial: false,
-          states: <SwitchRule>[SwitchRule.trackColor(unselected: CupertinoColors.systemOrange)],
+          rules: <SwitchRule>[SwitchRule.trackColor(unselected: CupertinoColors.systemOrange)],
         ),
       ],
     );
@@ -562,10 +562,10 @@ class RegionRulesSection extends StatelessWidget {
 }
 
 class _RegionSwitch extends StatefulWidget {
-  const _RegionSwitch({super.key, required this.initial, this.states = const <SwitchRule>[]});
+  const _RegionSwitch({super.key, required this.initial, this.rules = const <SwitchRule>[]});
 
   final bool initial;
-  final List<SwitchRule> states;
+  final List<SwitchRule> rules;
 
   @override
   State<_RegionSwitch> createState() => _RegionSwitchState();
@@ -576,5 +576,5 @@ class _RegionSwitchState extends State<_RegionSwitch> {
 
   @override
   Widget build(BuildContext context) =>
-      Switch(value: _on, states: widget.states, onChanged: (bool v) => setState(() => _on = v));
+      Switch(value: _on, rules: widget.rules, onChanged: (bool v) => setState(() => _on = v));
 }

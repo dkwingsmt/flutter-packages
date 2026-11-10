@@ -256,7 +256,7 @@ void main() {
     expect(unexpected, isEmpty);
   });
 
-  testWidgets('null falls through to the theme and the defaults; states: still comes after', (WidgetTester tester) async {
+  testWidgets('null falls through to the theme and the defaults; rules: still comes after', (WidgetTester tester) async {
     late BuildContext ctx;
     await tester.pumpWidget(inEnvironment(
         light,
@@ -274,12 +274,12 @@ void main() {
           (Set<WidgetState> s) => s.contains(WidgetState.focused) ? red : null),
       trackOutlineWidth: WidgetStateProperty.resolveWith<double?>(
           (Set<WidgetState> s) => s.contains(WidgetState.disabled) ? 5.0 : null),
-      states: const <SwitchRule>[SwitchRule(SwitchWhen(hovered: true), style: SwitchStyle(trackOutlineColor: green))],
+      rules: const <SwitchRule>[SwitchRule(SwitchWhen(hovered: true), style: SwitchStyle(trackOutlineColor: green))],
     );
     expect(sw.resolveOwn(ctx, selected: true).trackOutlineColor, blue, reason: 'null -> theme');
     expect(sw.resolveOwn(ctx, selected: true, focused: true).trackOutlineColor, red);
     expect(sw.resolveOwn(ctx, selected: true, focused: true, hovered: true).trackOutlineColor, green,
-        reason: 'states: is after the flat parameters');
+        reason: 'rules: is after the flat parameters');
     expect(sw.resolveOwn(ctx, selected: false).trackOutlineWidth, 2.0, reason: 'null -> default');
     expect(sw.resolveOwn(ctx, selected: false, disabled: true).trackOutlineWidth, 5.0);
 
@@ -343,7 +343,7 @@ void main() {
       value: true,
       onChanged: (bool _) {},
       trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> _) => current),
-      states: <SwitchRule>[
+      rules: <SwitchRule>[
         SwitchRule(const SwitchWhen(),
             style: SwitchStyleSpec(focusColor: .computed((SwitchView s) => s.field(.trackOutlineColor)!.withAlpha(99)))),
       ],

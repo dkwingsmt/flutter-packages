@@ -478,7 +478,7 @@ final class SwitchStyle extends SwitchStyleSpec {
 /// A [Switch] rule: condition + one payload, `style:` (a [SwitchStyleSpec]
 /// or its all-values form [SwitchStyle]). Goes in StyleTheme / StyleScope
 /// rule lists (mixed with other components' rules) and in
-/// `Switch(states: ...)`. A typed list spread writes the component name once
+/// `Switch(rules: ...)`. A typed list spread writes the component name once
 /// for a group of rules: `...<SwitchRule>[.when(...), .always(...)]`.
 ///
 /// Ways to write one:
@@ -941,7 +941,7 @@ Minterm switchMinterm({
 
 /// The resolved [SwitchStyle] at any state (design doc 7.6), without pumping
 /// gestures: the library defaults, the StyleTheme and StyleScopes visible
-/// at [context], then [states] (call-site rules, e.g. a widget's own).
+/// at [context], then [rules] (call-site rules, e.g. a widget's own).
 /// Environment dimensions not given come from the StyleTheme / StyleScope
 /// environment, then from [context]. Backs `Switch.resolveStyle`.
 SwitchStyle resolveSwitchStyle(
@@ -954,21 +954,21 @@ SwitchStyle resolveSwitchStyle(
   Brightness? brightness,
   bool? highContrast,
   CupertinoUserInterfaceLevelData? interfaceLevel,
-  List<SwitchRule> states = const <SwitchRule>[],
+  List<SwitchRule> rules = const <SwitchRule>[],
 }) {
   final StyleNode node = StyleTheme.peekNode(context);
   final ResolvedEnvironment env = node.effectiveEnvironment
       .merge(StyleEnvironment(brightness: brightness, highContrast: highContrast, interfaceLevel: interfaceLevel))
       .resolve(context);
-  return SwitchStyle.fromValues(StyleResolver<SwitchField>(switchStyle).resolve(node, states, switchMinterm(disabled: disabled, selected: selected, pressed: pressed, focused: focused, hovered: hovered, env: env)));
+  return SwitchStyle.fromValues(StyleResolver<SwitchField>(switchStyle).resolve(node, rules, switchMinterm(disabled: disabled, selected: selected, pressed: pressed, focused: focused, hovered: hovered, env: env)));
 }
 
 /// [resolveSwitchStyle] without a widget tree (design doc 7.6): [theme] is
-/// a StyleTheme rule list, [states] the call-site rules, and the
+/// a StyleTheme rule list, [rules] the call-site rules, and the
 /// environment is given (every environment dimension).
 SwitchStyle resolveSwitchStyleFromRules({
   List<Rule> theme = const <Rule>[],
-  List<SwitchRule> states = const <SwitchRule>[],
+  List<SwitchRule> rules = const <SwitchRule>[],
   bool disabled = false,
   bool selected = false,
   bool pressed = false,
@@ -980,5 +980,5 @@ SwitchStyle resolveSwitchStyleFromRules({
 }) {
   final StyleNode node = StyleNode.root(rules: theme);
   final ResolvedEnvironment env = ResolvedEnvironment(brightness: brightness, highContrast: highContrast, interfaceLevel: interfaceLevel);
-  return SwitchStyle.fromValues(StyleResolver<SwitchField>(switchStyle).resolve(node, states, switchMinterm(disabled: disabled, selected: selected, pressed: pressed, focused: focused, hovered: hovered, env: env)));
+  return SwitchStyle.fromValues(StyleResolver<SwitchField>(switchStyle).resolve(node, rules, switchMinterm(disabled: disabled, selected: selected, pressed: pressed, focused: focused, hovered: hovered, env: env)));
 }

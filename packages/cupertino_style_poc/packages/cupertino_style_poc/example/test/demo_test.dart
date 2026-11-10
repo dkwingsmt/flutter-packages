@@ -61,7 +61,7 @@ void main() {
       expect(argb(textColorOf(tester, 'red-button')), argb(CupertinoColors.label.darkColor));
     });
 
-    testWidgets('states: [pressed] changes only the pressed look', (WidgetTester tester) async {
+    testWidgets('rules: [pressed] changes only the pressed look', (WidgetTester tester) async {
       await pumpDemo(tester);
       final Color? rest = backgroundOf(tester, 'pressed-tweak');
       final Color? disabledRest = backgroundOf(tester, 'pressed-tweak-disabled');
@@ -205,7 +205,7 @@ void main() {
       expect(switchStyleOf(tester, 'region-switch-disabled', selected: true, disabled: true).opacity, 0.25);
     });
 
-    testWidgets('states: with a region rule sets that region only', (WidgetTester tester) async {
+    testWidgets('rules: with a region rule sets that region only', (WidgetTester tester) async {
       await pumpDemo(tester);
       expect(argb(backgroundOf(tester, 'region-states')), argb(CupertinoColors.systemRed.color));
       final Finder button = find.byKey(const Key('region-states'));

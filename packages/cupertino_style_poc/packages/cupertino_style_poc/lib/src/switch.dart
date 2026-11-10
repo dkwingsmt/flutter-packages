@@ -136,7 +136,7 @@ class Switch extends StatefulWidget {
     this.onFocusChange,
     this.autofocus = false,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.states = const <SwitchRule>[],
+    this.rules = const <SwitchRule>[],
   })  : assert(activeThumbImage != null || onActiveThumbImageError == null),
         assert(inactiveThumbImage != null || onInactiveThumbImageError == null);
 
@@ -150,7 +150,7 @@ class Switch extends StatefulWidget {
   /// environment (brightness x contrast x elevation): it is expanded into
   /// one plain color per environment when the chain is built, the same way
   /// as in a theme rule. To change only some environments, add a rule with
-  /// an environment condition to [states]; it may hold a plain color or a
+  /// an environment condition to [rules]; it may hold a plain color or a
   /// dynamic color (only the dynamic color's slots inside the condition are
   /// taken).
   final Color? activeTrackColor;
@@ -219,11 +219,11 @@ class Switch extends StatefulWidget {
   final DragStartBehavior dragStartBehavior;
 
   /// Call-site rules, after the flat parameters.
-  final List<SwitchRule> states;
+  final List<SwitchRule> rules;
 
   /// The call-site provider: one rule per flat parameter (a region rule
   /// where the field's default is partitioned, else a rule under
-  /// `SwitchWhen()` or a hand-written condition), then [states].
+  /// `SwitchWhen()` or a hand-written condition), then [rules].
   List<SwitchRule> callSiteRules() {
     const SwitchWhen every = SwitchWhen();
     SwitchRule all(SwitchStyle s) => SwitchRule(every, style: s);
@@ -258,7 +258,7 @@ class Switch extends StatefulWidget {
               () => switchRulesFromWidgetStates(mouseCursor: cursor as WidgetStateProperty<MouseCursor?>))
         else
           SwitchRule.mouseCursor(enabled: cursor, disabled: cursor),
-      ...states,
+      ...rules,
     ];
   }
 
@@ -281,8 +281,8 @@ class Switch extends StatefulWidget {
   State<Switch> createState() => _SwitchWidgetState();
 
   /// The resolved style of a switch at any state (design doc 7.6): the
-  /// defaults, the theme and scopes visible at [context], then [states].
-  /// Pass `states: sw.callSiteRules()` to include an instance's flat
+  /// defaults, the theme and scopes visible at [context], then [rules].
+  /// Pass `rules: sw.callSiteRules()` to include an instance's flat
   /// parameters. Delegates to the generated [resolveSwitchStyle].
   static SwitchStyle resolveStyle(
     BuildContext context, {
@@ -294,7 +294,7 @@ class Switch extends StatefulWidget {
     Brightness? brightness,
     bool? highContrast,
     CupertinoUserInterfaceLevelData? interfaceLevel,
-    List<SwitchRule> states = const <SwitchRule>[],
+    List<SwitchRule> rules = const <SwitchRule>[],
   }) =>
       resolveSwitchStyle(context,
           selected: selected,
@@ -305,7 +305,7 @@ class Switch extends StatefulWidget {
           brightness: brightness,
           highContrast: highContrast,
           interfaceLevel: interfaceLevel,
-          states: states);
+          rules: rules);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

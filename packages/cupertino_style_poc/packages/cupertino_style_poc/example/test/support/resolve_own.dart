@@ -15,7 +15,7 @@ extension ButtonResolveOwn on Button {
           disabled: disabled,
           pressed: pressed,
           focused: focused,
-          states: callSiteRules());
+          rules: callSiteRules());
 }
 
 extension SwitchResolveOwn on Switch {
@@ -27,5 +27,5 @@ extension SwitchResolveOwn on Switch {
           pressed: pressed,
           focused: focused,
           hovered: hovered,
-          states: callSiteRules());
+          rules: callSiteRules());
 }

@@ -527,7 +527,7 @@ final class _C {
     o.doc('A [$n] rule: condition + one payload, `style:` (a [$spec]\n'
         'or its all-values form [$style_]). Goes in StyleTheme / StyleScope\n'
         "rule lists (mixed with other components' rules) and in\n"
-        "`$n(states: ...)`. A typed list spread writes the component name once\n"
+        "`$n(rules: ...)`. A typed list spread writes the component name once\n"
         'for a group of rules: `...<$rule_>[.when(...), .always(...)]`.\n'
         '\n'
         'Ways to write one:\n'
@@ -876,7 +876,7 @@ final class _C {
     final String stateArgs = <String>[for (final DimModel d in c.dims) '${d.name}: ${d.name}'].join(', ');
     o.doc('The resolved [$style_] at any state (design doc 7.6), without pumping\n'
         'gestures: the library defaults, the StyleTheme and StyleScopes visible\n'
-        'at [context], then [states] (call-site rules, e.g. a widget\'s own).\n'
+        'at [context], then [rules] (call-site rules, e.g. a widget\'s own).\n'
         'Environment dimensions not given come from the StyleTheme / StyleScope\n'
         'environment, then from [context]. Backs `$n.resolveStyle`.');
     o.line('$style_ resolve${n}Style(');
@@ -887,21 +887,21 @@ final class _C {
     for (final EnvDimModel d in lib.env) {
       o.line('  ${d.isBool ? 'bool' : d.type}? ${d.name},');
     }
-    o.line('  List<$rule_> states = const <$rule_>[],');
+    o.line('  List<$rule_> rules = const <$rule_>[],');
     o.line('}) {');
     o.line('  final StyleNode node = StyleTheme.peekNode(context);');
     o.line('  final ResolvedEnvironment env = node.effectiveEnvironment');
     o.line('      .merge(StyleEnvironment(${<String>[for (final EnvDimModel d in lib.env) '${d.name}: ${d.name}'].join(', ')}))');
     o.line('      .resolve(context);');
-    o.line('  return $style_.fromValues(StyleResolver<$field>(${lc}Style).resolve(node, states, ${lc}Minterm($stateArgs, env: env)));');
+    o.line('  return $style_.fromValues(StyleResolver<$field>(${lc}Style).resolve(node, rules, ${lc}Minterm($stateArgs, env: env)));');
     o.line('}');
     o.blank();
     o.doc('[resolve${n}Style] without a widget tree (design doc 7.6): [theme] is\n'
-        'a StyleTheme rule list, [states] the call-site rules, and the\n'
+        'a StyleTheme rule list, [rules] the call-site rules, and the\n'
         'environment is given (every environment dimension).');
     o.line('$style_ resolve${n}StyleFromRules({');
     o.line('  List<Rule> theme = const <Rule>[],');
-    o.line('  List<$rule_> states = const <$rule_>[],');
+    o.line('  List<$rule_> rules = const <$rule_>[],');
     for (final String p in stateParams) {
       o.line('  $p,');
     }
@@ -911,7 +911,7 @@ final class _C {
     o.line('}) {');
     o.line('  final StyleNode node = StyleNode.root(rules: theme);');
     o.line('  final ResolvedEnvironment env = ResolvedEnvironment(${<String>[for (final EnvDimModel d in lib.env) '${d.name}: ${d.name}'].join(', ')});');
-    o.line('  return $style_.fromValues(StyleResolver<$field>(${lc}Style).resolve(node, states, ${lc}Minterm($stateArgs, env: env)));');
+    o.line('  return $style_.fromValues(StyleResolver<$field>(${lc}Style).resolve(node, rules, ${lc}Minterm($stateArgs, env: env)));');
     o.line('}');
     o.blank();
   }
