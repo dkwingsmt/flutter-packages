@@ -1,4 +1,4 @@
-# A Component Theming Model for Flutter (Quick Version)
+# Rule-Based Theming for Flutter (Quick Version)
 
 > Working draft for internal team review. Class names are temporary placeholders; final naming will be decided separately. For the full derivation, engineering benchmarks, and migration plan, see the [full design document (`design-doc/00-intro.md`)](design-doc/00-intro.md).
 

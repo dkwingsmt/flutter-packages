@@ -1,4 +1,4 @@
-# A Component Styling and Theming Model for Flutter (Design Document)
+# Rule-Based Theming: A Component Styling and Theming Model for Flutter
 
 > Working draft for internal team review. Class names are temporary placeholders; final naming will be decided separately.
 
